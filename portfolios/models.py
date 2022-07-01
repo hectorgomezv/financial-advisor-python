@@ -21,4 +21,4 @@ class Position(models.Model):
     target_weight = models.FloatField()
     shares = models.IntegerField(default=0)
     def __str__(self):
-        return self.company + ' - ' + self.portfolio
+        return self.portfolio.name + ' - ' + self.company.name
