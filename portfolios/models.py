@@ -11,6 +11,9 @@ class Company(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ['symbol']
+
 
 class Portfolio(models.Model):
     name = models.CharField(max_length=200)
@@ -25,6 +28,9 @@ class Portfolio(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ['created']
+
 
 class Position(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
@@ -34,3 +40,6 @@ class Position(models.Model):
 
     def __str__(self):
         return self.portfolio.name + ' - ' + self.company.name
+
+    class Meta:
+        ordering = ['target_weight']

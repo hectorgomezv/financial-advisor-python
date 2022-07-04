@@ -7,12 +7,9 @@ class PortfolioModelTests(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.test_company = Company(name='Test company', symbol='TST')
-        cls.test_company.save()
-        cls.another_test_company = Company(name='Another test company', symbol='TST2')
-        cls.another_test_company.save()
-        cls.portfolio = Portfolio(name='Test Portfolio', created=timezone.now())
-        cls.portfolio.save()
+        cls.test_company = Company.objects.create(name='Test company', symbol='TST')
+        cls.another_test_company = Company.objects.create(name='Another test company', symbol='TST2')
+        cls.portfolio = Portfolio.objects.create(name='Test Portfolio', created=timezone.now())
 
     def test_get_assigned_weight_with_no_positions(self):
         """
