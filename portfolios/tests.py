@@ -38,4 +38,3 @@ class PortfolioModelTests(TestCase):
         position = Position(company=self.another_test_company, portfolio=self.portfolio, target_weight=18, shares=2)
         position.save()
         self.assertEqual(self.portfolio.get_assigned_weight(), 70)
-
