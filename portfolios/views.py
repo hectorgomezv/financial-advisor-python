@@ -1,11 +1,10 @@
 from django.http import Http404
-from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Company
-from .serializers import CompanySerializer
+from .models import Company, Portfolio
+from .serializers import CompanySerializer, PortfolioSerializer
 
 class CompaniesList(APIView):
     """
@@ -51,3 +50,11 @@ class CompaniesDetail(APIView):
         company = self.get_object(pk)
         company.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class PortfoliosList(generics.ListCreateAPIView):
+    queryset = Portfolio.objects.all()
+    serializer_class = PortfolioSerializer
+
+class PortfoliosDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Portfolio.objects.all()
+    serializer_class = PortfolioSerializer
