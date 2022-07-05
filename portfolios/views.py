@@ -3,8 +3,8 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Company, Portfolio
-from .serializers import CompanySerializer, PortfolioSerializer
+from .models import Company, Portfolio, Position
+from .serializers import CompanySerializer, PortfolioSerializer, PositionSerializer
 
 class CompaniesList(APIView):
     """
@@ -58,3 +58,11 @@ class PortfoliosList(generics.ListCreateAPIView):
 class PortfoliosDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Portfolio.objects.all()
     serializer_class = PortfolioSerializer
+
+class PositionsList(APIView):
+    def get(self, request, format=None):
+        positions = Position.objects.all()
+        serializer = PositionSerializer(positions, many=True)
+        return Response(serializer.data)
+
+
