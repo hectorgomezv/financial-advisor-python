@@ -11,11 +11,12 @@ python3 -m venv venv
 ```
 docker compose up -d
 ```
-- Source the virtual environment and run migrations.
+- Source the virtual environment, install dependencies, and run migrations.
 ```
 source venv/bin/activate
+pip install -r requirements.txt
+export DJANGO_SETTINGS_MODULE=financialadvisor.settings
 python -m django migrate
-python -m django migrate portfolios
 ```
 - Create superuser
 ```

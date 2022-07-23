@@ -8,6 +8,8 @@ urlpatterns = [
     path("portfolios/", views.PortfoliosList.as_view()),
     path("portfolios/<int:pk>", views.PortfoliosDetail.as_view()),
     path("portfolios/<int:pk>/positions", views.PositionsList.as_view()),
+    path("users/", views.UserList.as_view()),
+    path("users/<int:pk>/", views.UserDetail.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

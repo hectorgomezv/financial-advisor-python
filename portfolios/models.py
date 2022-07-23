@@ -1,7 +1,7 @@
 from email.policy import default
 from pyexpat import model
 from django.db import models
-from django.forms import FloatField
+from django.utils import timezone
 
 
 class Company(models.Model):
@@ -12,12 +12,15 @@ class Company(models.Model):
         return self.name
 
     class Meta:
-        ordering = ['symbol']
+        ordering = ["symbol"]
 
 
 class Portfolio(models.Model):
     name = models.CharField(max_length=200)
-    created = models.DateTimeField('date created')
+    created = models.DateTimeField("date created", default=timezone.now)
+    owner = models.ForeignKey(
+        "auth.User", related_name="portfolios", on_delete=models.CASCADE
+    )
 
     def get_assigned_weight(self):
         assigned_weight = 0
@@ -29,7 +32,7 @@ class Portfolio(models.Model):
         return self.name
 
     class Meta:
-        ordering = ['created']
+        ordering = ["created"]
 
 
 class Position(models.Model):
@@ -37,9 +40,12 @@ class Position(models.Model):
     portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
     target_weight = models.FloatField()
     shares = models.IntegerField(default=0)
+    owner = models.ForeignKey(
+        "auth.User", related_name="positions", on_delete=models.CASCADE
+    )
 
     def __str__(self):
-        return self.portfolio.name + ' - ' + self.company.name
+        return self.portfolio.name + " - " + self.company.name
 
     class Meta:
-        ordering = ['target_weight']
+        ordering = ["target_weight"]

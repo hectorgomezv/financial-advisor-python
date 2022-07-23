@@ -1,10 +1,16 @@
+from django.contrib.auth.models import User
 from django.http import Http404
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Company, Portfolio, Position
-from .serializers import CompanySerializer, PortfolioSerializer, PositionSerializer
+from .serializers import (
+    CompanySerializer,
+    PortfolioSerializer,
+    PositionSerializer,
+    UserSerializer,
+)
 
 
 class CompaniesList(APIView):
@@ -59,6 +65,9 @@ class PortfoliosList(generics.ListCreateAPIView):
     queryset = Portfolio.objects.all()
     serializer_class = PortfolioSerializer
 
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
 
 class PortfoliosDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Portfolio.objects.all()
@@ -70,3 +79,13 @@ class PositionsList(APIView):
         positions = Position.objects.all()
         serializer = PositionSerializer(positions, many=True)
         return Response(serializer.data)
+
+
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class UserDetail(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
