@@ -6,10 +6,12 @@ from rest_framework.views import APIView
 from .models import Company, Portfolio, Position
 from .serializers import CompanySerializer, PortfolioSerializer, PositionSerializer
 
+
 class CompaniesList(APIView):
     """
     List all the companies or creates a new one.
     """
+
     def get(self, request, format=None):
         companies = Company.objects.all()
         serializer = CompanySerializer(companies, many=True)
@@ -27,6 +29,7 @@ class CompaniesDetail(APIView):
     """
     Retrieve, delete or update a company.
     """
+
     def get_object(self, pk):
         try:
             return Company.objects.get(pk=pk)
@@ -51,18 +54,19 @@ class CompaniesDetail(APIView):
         company.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 class PortfoliosList(generics.ListCreateAPIView):
     queryset = Portfolio.objects.all()
     serializer_class = PortfolioSerializer
+
 
 class PortfoliosDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Portfolio.objects.all()
     serializer_class = PortfolioSerializer
 
+
 class PositionsList(APIView):
-    def get(self, request, format=None):
+    def get(self, request, pk):
         positions = Position.objects.all()
         serializer = PositionSerializer(positions, many=True)
         return Response(serializer.data)
-
-
