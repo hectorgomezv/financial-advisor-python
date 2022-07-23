@@ -4,6 +4,8 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from portfolios.permissions import IsOwner
+
 from .models import Company, Portfolio, Position
 from .serializers import (
     CompanySerializer,
@@ -72,6 +74,7 @@ class PortfoliosList(generics.ListCreateAPIView):
 class PortfoliosDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Portfolio.objects.all()
     serializer_class = PortfolioSerializer
+    permission_classes = [IsOwner]
 
 
 class PositionsList(APIView):
