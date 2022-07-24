@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from rest_framework import generics, status
 from rest_framework.response import Response
@@ -67,6 +68,10 @@ class PortfoliosList(generics.ListCreateAPIView):
     queryset = Portfolio.objects.all()
     serializer_class = PortfolioSerializer
 
+    def get_queryset(self):
+        user = self.request.user
+        return Portfolio.objects.filter(owner=user)
+
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
@@ -79,9 +84,26 @@ class PortfoliosDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class PositionsList(APIView):
     def get(self, request, pk):
-        positions = Position.objects.all()
-        serializer = PositionSerializer(positions, many=True)
-        return Response(serializer.data)
+        try:
+            portfolio = Portfolio.objects.get(id=pk)
+            positions = Position.objects.filter(portfolio=portfolio)
+            serializer = PositionSerializer(positions, many=True)
+            return Response(serializer.data)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def post(self, request, pk, format=None):
+        serializer = PositionSerializer(data=request.data)
+        try:
+            if serializer.is_valid():
+                user = self.request.user
+                company = Company.objects.get(id=request.data["company_id"])
+                portfolio = Portfolio.objects.get(id=pk)
+                serializer.save(company=company, portfolio=portfolio, owner=user)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserList(generics.ListAPIView):
