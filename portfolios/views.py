@@ -101,8 +101,8 @@ class PositionsList(APIView):
                 portfolio = Portfolio.objects.get(id=pk)
                 serializer.save(company=company, portfolio=portfolio, owner=user)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
-        except ObjectDoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        except ObjectDoesNotExist as err:
+            return Response(data={"error": str(err)}, status=status.HTTP_404_NOT_FOUND)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

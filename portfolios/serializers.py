@@ -9,16 +9,16 @@ class CompanySerializer(serializers.HyperlinkedModelSerializer):
         fields = ["id", "name", "symbol"]
 
 
-class PortfolioSerializer(serializers.HyperlinkedModelSerializer):
-    owner = serializers.ReadOnlyField(source="owner.username")
-
-    class Meta:
-        model = Portfolio
-        fields = ["id", "name", "created", "owner"]
-
-
 class PositionSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.ReadOnlyField(source="owner.username")
+    companyName = serializers.SerializerMethodField()
+    symbol = serializers.SerializerMethodField()
+
+    def get_companyName(self, obj):
+        return obj.company.name
+
+    def get_symbol(self, obj):
+        return obj.company.symbol
 
     class Meta:
         model = Position
@@ -27,9 +27,20 @@ class PositionSerializer(serializers.HyperlinkedModelSerializer):
             "target_weight",
             "shares",
             "company_id",
+            "companyName",
+            "symbol",
             "portfolio_id",
             "owner",
         ]
+
+
+class PortfolioSerializer(serializers.HyperlinkedModelSerializer):
+    owner = serializers.ReadOnlyField(source="owner.username")
+    positions = PositionSerializer(many=True)
+
+    class Meta:
+        model = Portfolio
+        fields = ["id", "name", "created", "owner", "positions"]
 
 
 class UserSerializer(serializers.ModelSerializer):

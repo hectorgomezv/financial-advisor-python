@@ -37,7 +37,9 @@ class Portfolio(models.Model):
 
 class Position(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
+    portfolio = models.ForeignKey(
+        Portfolio, related_name="positions", on_delete=models.CASCADE
+    )
     target_weight = models.FloatField()
     shares = models.IntegerField(default=0)
     owner = models.ForeignKey(
